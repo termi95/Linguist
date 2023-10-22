@@ -26,5 +26,16 @@
 }
 
 .grow:hover {
-  transform: scale(1.1);
+  transform: scale(1.2, 1.2);
 }
+
+.link {
+  color: #0060df;
+}
+
+@media only screen and (max-width: 1300px) {
+  .form {
+    width: 150%;
+    margin-left: -25%;
+  }
+} 

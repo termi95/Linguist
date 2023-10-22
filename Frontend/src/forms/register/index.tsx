@@ -18,6 +18,7 @@ import { ArrowBackUp } from "tabler-icons-react";
 import styles from "./index.module.css";
 import { useValidatedState } from "@mantine/hooks";
 import { useState } from "react";
+import { UseRegisterForm } from "./useRegisterForm";
 interface Props {
   toggleForm: () => void;
 }
@@ -60,25 +61,33 @@ function getStrength(password: string) {
   return Math.max(100 - (100 / (requirements.length + 1)) * multiplier, 10);
 }
 export function RegisterForm({ toggleForm }: Props) {
+  const { Register, RegisterOnEnter } = UseRegisterForm();
   const [{ value, valid }, setEmail] = useValidatedState(
     "",
     (val) => /^\S+@\S+$/.test(val),
     true
   );
   const [popoverOpened, setPopoverOpened] = useState(false);
-  const [passowrd, setValue] = useState("");
+  const [password, setValue] = useState("");
   const checks = requirements.map((requirement, index) => (
     <PasswordRequirement
       key={index}
       label={requirement.label}
-      meets={requirement.re.test(passowrd)}
+      meets={requirement.re.test(password)}
     />
   ));
-  const strength = getStrength(passowrd);
+  const strength = getStrength(password);
   const color = strength === 100 ? "teal" : strength > 50 ? "yellow" : "red";
   return (
     <>
-      <form className={styles.form}>
+      <form
+        className={styles.form}
+        onKeyDown={async (e: React.KeyboardEvent<HTMLElement>) => {
+          if (await RegisterOnEnter({ email: value, password: password }, e)) {
+            toggleForm();
+          }
+        }}
+      >
         <h1 className={styles.header}>Register</h1>
         <InputBase
           value={value}
@@ -90,55 +99,56 @@ export function RegisterForm({ toggleForm }: Props) {
           withAsterisk
           onChange={(event) => setEmail(event.currentTarget.value)}
         />
-        <Box maw={340} mx="auto">
-          <Popover
-            opened={popoverOpened}
-            position="bottom"
-            width="target"
-            transitionProps={{ transition: "pop" }}
-          >
-            <Popover.Target>
-              <div
-                onFocusCapture={() => setPopoverOpened(true)}
-                onBlurCapture={() => setPopoverOpened(false)}
-              >
-                <PasswordInput
-                  withAsterisk
-                  label="Password"
-                  placeholder="Password"
-                  value={passowrd}
-                  onChange={(event) => setValue(event.currentTarget.value)}
-                  visibilityToggleIcon={({ reveal, size }) =>
-                    reveal ? (
-                      <IconEyeOff size={size} />
-                    ) : (
-                      <IconEyeCheck size={size} />
-                    )
-                  }
-                  description="Password must include at least one letter, number and special character"
+        <div className={`${styles.padLeft}  ${styles.padRight}`}>
+          <Box maw={340} mx="auto">
+            <Popover
+              opened={popoverOpened}
+              position="bottom"
+              width="target"
+              transitionProps={{ transition: "pop" }}
+            >
+              <Popover.Target>
+                <div
+                  onFocusCapture={() => setPopoverOpened(true)}
+                  onBlurCapture={() => setPopoverOpened(false)}
+                >
+                  <PasswordInput
+                    withAsterisk
+                    label="Password"
+                    placeholder="Password"
+                    value={password}
+                    onChange={(event) => setValue(event.currentTarget.value)}
+                    visibilityToggleIcon={({ reveal, size }) =>
+                      reveal ? (
+                        <IconEyeOff size={size} />
+                      ) : (
+                        <IconEyeCheck size={size} />
+                      )
+                    }
+                    description="Password must include at least one letter, number and special character"
+                  />
+                </div>
+              </Popover.Target>
+              <Popover.Dropdown>
+                <Progress color={color} value={strength} size={8} mb="xs" />
+                <PasswordRequirement
+                  label="Includes at least 6 characters"
+                  meets={password.length > 7}
                 />
-              </div>
-            </Popover.Target>
-            <Popover.Dropdown>
-              <Progress color={color} value={strength} size={8} mb="xs" />
-              <PasswordRequirement
-                label="Includes at least 6 characters"
-                meets={passowrd.length > 7}
-              />
-              {checks}
-            </Popover.Dropdown>
-          </Popover>
-        </Box>
-        <PasswordInput
-          className={styles.pad}
-          label="Password"
-          placeholder="Password"
-          withAsterisk
-          visibilityToggleIcon={({ reveal, size }) =>
-            reveal ? <IconEyeOff size={size} /> : <IconEyeCheck size={size} />
-          }
-        />
-        <Button className={`${styles.submit}`} color="indigo">
+                {checks}
+              </Popover.Dropdown>
+            </Popover>
+          </Box>
+        </div>
+        <Button
+          className={`${styles.submit} ${styles.pad}`}
+          color="indigo"
+          onClick={async () => {
+            if (await Register({ email: value, password: password })) {
+              toggleForm();
+            }
+          }}
+        >
           Register
         </Button>
         <div className={`flex space-between ${styles.pad}`}>

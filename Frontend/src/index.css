@@ -41,11 +41,19 @@ body {
   justify-content: space-between;
 }
 
+.space-around {
+  justify-content: space-around;
+}
+
+.space-evenly {
+  justify-content: space-evenly;
+}
+
 .text-center {
   text-align: center;
 }
 
-.pointer { 
+.pointer {
   cursor: pointer;
 }
 
@@ -54,10 +62,9 @@ body {
 }
 
 .vh100 {
-  min-height: 100vh;   
+  min-height: 100vh;
 }
 
 .margin-auto {
   margin: auto;
 }
-

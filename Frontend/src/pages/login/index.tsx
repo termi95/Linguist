@@ -12,9 +12,11 @@ export function Login() {
   return (
     <>
       <div className={`flex vw100 vh100 ${styles.background}`}>
-        <div className="margin-auto">
-          <img src={svg} alt="sketching" />
-        </div>
+        {window.innerWidth > 1300 ? (
+          <div className={`margin-auto ${styles.mobile}`}>
+            <img src={svg} alt="sketching" />
+          </div>
+        ) : null}
         <div className={`${styles.center}`}>
           <h2 className={`text-center ${styles.header}`}>Lingüista</h2>
           {!isRegisterForm ? (
