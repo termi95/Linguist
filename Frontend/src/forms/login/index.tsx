@@ -1,12 +1,13 @@
 import { Button, InputBase, PasswordInput } from "@mantine/core";
-import { IconAt, IconEyeCheck, IconEyeOff } from "@tabler/icons-react";
+import { IconAt } from "@tabler/icons-react";
 import styles from "./index.module.css";
 import { useLoginForm } from "./useLoginForm";
 interface Props {
   toggleForm: () => void;
 }
 export function LoginForm({ toggleForm }: Props) {
-  const { Login, user, SetPassword, SetEmail, LoginOnEnter } = useLoginForm();
+  const { Login, user, SetPassword, SetEmail, LoginOnEnter, toggle, visible } =
+    useLoginForm();
   return (
     <>
       <form
@@ -18,7 +19,7 @@ export function LoginForm({ toggleForm }: Props) {
         <h1 className={styles.header}>Login</h1>
         <InputBase
           label="Login"
-          icon={<IconAt />}
+          leftSection={<IconAt />}
           placeholder="login"
           className={styles.pad}
           value={user?.email}
@@ -30,9 +31,8 @@ export function LoginForm({ toggleForm }: Props) {
           placeholder="Password"
           onChange={(e: React.ChangeEvent<HTMLInputElement>) => SetPassword(e)}
           value={user?.password}
-          visibilityToggleIcon={({ reveal, size }) =>
-            reveal ? <IconEyeOff size={size} /> : <IconEyeCheck size={size} />
-          }
+          visible={visible}
+          onVisibilityChange={toggle}
         />
         <div className={`text-center pointer ${styles.pad} ${styles.link}`}>
           <h4 className={`pointer ${styles.grow}`}>Forgot password?</h4>

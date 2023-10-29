@@ -6,6 +6,7 @@ import {
   Popover,
   Progress,
   Text,
+  rem,
 } from "@mantine/core";
 import {
   IconAt,
@@ -31,12 +32,16 @@ function PasswordRequirement({
 }) {
   return (
     <Text
-      color={meets ? "teal" : "red"}
-      sx={{ display: "flex", alignItems: "center" }}
+      c={meets ? "teal" : "red"}
+      style={{ display: "flex", alignItems: "center" }}
       mt={7}
       size="sm"
     >
-      {meets ? <IconCheck size="0.9rem" /> : <IconX size="0.9rem" />}{" "}
+      {meets ? (
+        <IconCheck style={{ width: rem(14), height: rem(14) }} />
+      ) : (
+        <IconX style={{ width: rem(14), height: rem(14) }} />
+      )}{" "}
       <Box ml={10}>{label}</Box>
     </Text>
   );
@@ -93,7 +98,7 @@ export function RegisterForm({ toggleForm }: Props) {
           value={value}
           error={!valid}
           label="Login"
-          icon={<IconAt />}
+          leftSection={<IconAt />}
           placeholder="login"
           className={styles.pad}
           withAsterisk
@@ -118,11 +123,21 @@ export function RegisterForm({ toggleForm }: Props) {
                     placeholder="Password"
                     value={password}
                     onChange={(event) => setValue(event.currentTarget.value)}
-                    visibilityToggleIcon={({ reveal, size }) =>
+                    visibilityToggleIcon={({ reveal }) =>
                       reveal ? (
-                        <IconEyeOff size={size} />
+                        <IconEyeOff
+                          style={{
+                            width: "var(--psi-icon-size)",
+                            height: "var(--psi-icon-size)",
+                          }}
+                        />
                       ) : (
-                        <IconEyeCheck size={size} />
+                        <IconEyeCheck
+                          style={{
+                            width: "var(--psi-icon-size)",
+                            height: "var(--psi-icon-size)",
+                          }}
+                        />
                       )
                     }
                     description="Password must include at least one letter, number and special character"

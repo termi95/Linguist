@@ -3,11 +3,13 @@ import { ILogin } from "../../types/user";
 import { Api } from "../../helpers/api";
 import { Notification } from "../../helpers/notification";
 import { useNavigate } from "react-router-dom";
+import { useDisclosure } from "@mantine/hooks";
 
 export function useLoginForm() {
   const { Request, SaveToken } = Api();
   const { Error } = Notification();
   const [user, setUser] = useState<ILogin>({ email: "", password: "" });
+  const [visible, { toggle }] = useDisclosure(false);
   const navigate = useNavigate();
   async function Login(user: ILogin) {
     const respone = await Request("POST", "User/login", user);
@@ -40,5 +42,5 @@ export function useLoginForm() {
     return false;
   }
 
-  return { Login, user, SetPassword, SetEmail, LoginOnEnter };
+  return { Login, user, SetPassword, SetEmail, LoginOnEnter, visible, toggle };
 }
