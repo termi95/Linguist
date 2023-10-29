@@ -1,21 +1,39 @@
 import { Api } from "../../helpers/api";
 import { Notification } from "../../helpers/notification";
+import { notificationColor, Status } from "../../types/helper";
 import { IRegister } from "../../types/user";
 
 export function UseRegisterForm() {
   const { Request } = Api();
-  const { Error, Success } = Notification();
+  const { Update, Loading } = Notification();
   async function Register(user: IRegister) {
+    Loading("Register", "Register", "Register is procesing.");
     const respone = await Request<IRegister>("POST", "User/register", user);
     if (respone.ok) {
-      Success(undefined, "Registered successfully.");
+      Update(
+        "Register",
+        Status.Success,
+        "Registered successfully.",
+        notificationColor.Success,
+        2000
+      );
       return true;
     }
-    Error(undefined, await respone.text());
+    Update(
+      "Register",
+      Status.Error,
+      await respone.text(),
+      notificationColor.Error,
+      false
+    );
     return false;
   }
-  async function RegisterOnEnter(user: IRegister, e: React.KeyboardEvent<HTMLElement>) {
+  async function RegisterOnEnter(
+    user: IRegister,
+    e: React.KeyboardEvent<HTMLElement>
+  ) {
     const { key } = e;
+    console.log(key);
     if (key === "Enter") {
       return await Register(user);
     }

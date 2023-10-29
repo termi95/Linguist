@@ -2,15 +2,18 @@ import { useState } from "react";
 import { ILogin } from "../../types/user";
 import { Api } from "../../helpers/api";
 import { Notification } from "../../helpers/notification";
+import { useNavigate } from "react-router-dom";
 
 export function useLoginForm() {
   const { Request, SaveToken } = Api();
   const { Error } = Notification();
   const [user, setUser] = useState<ILogin>({ email: "", password: "" });
+  const navigate = useNavigate();
   async function Login(user: ILogin) {
     const respone = await Request("POST", "User/login", user);
     if (respone.ok) {
       SaveToken(await respone.json());
+      navigate("/home");
       return true;
     }
     Error("Error", respone.statusText);

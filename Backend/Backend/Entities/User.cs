@@ -8,7 +8,7 @@ namespace backend.Entities
     public class User
     {
         [Key]
-        public int Id { get; set; }
+        public Guid Id { get; set; }
         [MaxLength(128), NotNull]
         public string Email { get; set; }
         [NotNull]

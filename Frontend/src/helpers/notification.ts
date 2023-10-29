@@ -29,13 +29,14 @@ export function Notification() {
       loading: false,
     });
   }
-  function Loading(title: string = "Loading", message: string) {
+  function Loading(id:string, title: string = "Loading", message: string) {
     return notifications.show({
-      autoClose: 2000,
-      withCloseButton: true,
+      id,
       title,
       message,
-      loading: false,
+      autoClose: false,
+      withCloseButton: false,
+      loading: true,
     });
   }
 
@@ -43,11 +44,12 @@ export function Notification() {
     id: string,
     title: string = "Loading",
     message: string,
-    color: "teal" | "red" | undefined
+    color: "teal" | "red" | undefined,
+    autoClose: number | boolean
   ) {
     return notifications.update({
       id,
-      autoClose: 2000,
+      autoClose,
       withCloseButton: true,
       title,
       message,

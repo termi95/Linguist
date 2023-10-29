@@ -2,9 +2,11 @@ using backend;
 using backend.Entities;
 using backend.Middleware;
 using backend.Services;
+using Backend;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Writers;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -33,7 +35,8 @@ builder.Services.AddAuthentication(options =>
 builder.Services.AddControllers();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
-builder.Services.AddScoped<ErrorHandlingMiddleware>();
+builder.Services.AddScoped<Seeder>();
+builder.Services.AddScoped<ErrorHandlingMiddleware>(); 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -41,7 +44,12 @@ builder.Services.AddDbContext<LinguistDbContext>(options => options.UseNpgsql(co
 builder.Services.AddCors(options => options.AddPolicy("FrontEndClient", builder => builder.AllowAnyMethod().AllowAnyHeader().WithOrigins(new string[] { "https://127.0.0.1:5173", "http://127.0.0.1:5173" })));
 
 var app = builder.Build();
-
+using (var scope = app.Services.CreateScope())
+{
+    var serviceProvider = scope.ServiceProvider;
+    var seeder = serviceProvider.GetRequiredService<Seeder>();
+    seeder.seed();
+}
 AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 app.UseCors("FrontEndClient");
 // Configure the HTTP request pipeline.
